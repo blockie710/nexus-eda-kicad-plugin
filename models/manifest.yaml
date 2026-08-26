@@ -1,0 +1,84 @@
+# SPDX-License-Identifier: Apache-2.0
+# Nexus-EDA Model Manifest — Phase 1
+# Target models for local-first AI agentic EDA
+# GPU: RTX 4090 (24GB VRAM), CUDA 13.3.1, Ada Lovelace
+
+models:
+  # --- Primary Reasoning Model (netlist/schematic) ---
+  deepseek-v3-8b-q4:
+    name: "DeepSeek-V3-0324 (8B, Q4_K_M)"
+    provider: huggingface
+    model_id: deepseek-ai/DeepSeek-V3-0324
+    quant: Q4_K_M
+    vram_gb: 6-8
+    context_k: 128
+    capabilities:
+      - netlist_synthesis
+      - schematic_reasoning
+      - code_generation
+      - logical_analysis
+    license: MIT
+    download_size_gb: 5.0
+    primary: true
+
+  # --- Fallback Reasoning Model ---
+  llama3-8b-q4:
+    name: "Llama-3.1-8B (Q4_K_M)"
+    provider: huggingface
+    model_id: meta-llama/Llama-3.1-8B-Instruct
+    quant: Q4_K_M
+    vram_gb: 6-8
+    context_k: 128
+    capabilities:
+      - netlist_synthesis
+      - schematic_reasoning
+      - code_generation
+    license: custom
+    download_size_gb: 4.5
+    fallback_for: deepseek-v3-8b-q4
+
+  # --- Lightweight Model ---
+  qwen25-7b-q4:
+    name: "Qwen2.5-7B (Q4_K_M)"
+    provider: huggingface
+    model_id: Qwen/Qwen2.5-7B-Instruct
+    quant: Q4_K_M
+    vram_gb: 5-6
+    context_k: 128
+    capabilities:
+      - netlist_synthesis
+      - code_generation
+      - basic_reasoning
+    license: Apache-2.0
+    download_size_gb: 4.0
+    lightweight: true
+
+  # --- Vision Model (Phase 1.5+ for symbol recognition) ---
+  # NOT Phase 1 — requires 40GB+ VRAM (Qwen2.5-VL-72B)
+  qwen25-vl-7b:
+    name: "Qwen2.5-VL-7B"
+    provider: huggingface
+    model_id: Qwen/Qwen2.5-VL-7B-Instruct
+    quant: Q4_K_M
+    vram_gb: 8-10
+    context_k: 8
+    capabilities:
+      - symbol_recognition
+      - pcb_layout_vision
+      - pcb_image_analysis
+    license: Apache-2.0
+    download_size_gb: 5.0
+    phase: "1.5"
+
+runtime:
+  backend: llama-cpp-python
+  api: http://localhost:8000  # llama-cpp-server
+  quantization: Q4_K_M  # 4-bit quantization
+  temperature: 0.1  # Low temp for deterministic EDA reasoning
+  top_p: 0.9
+  max_tokens: 4096
+
+gpu_requirements:
+  minimum: "RTX 3060 12GB (lightweight only)"
+  recommended: "RTX 4090 24GB (all Phase 1 models)"
+  enterprise: "A6000 48GB / A100 80GB (large vision models)"

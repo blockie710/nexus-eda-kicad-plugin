@@ -1,6 +1,10 @@
 # SPDX-License-Identifier: Apache-2.0
 """Unit tests for Nexus-EDA agents."""
 
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+
 import pytest
 from nexus_eda.agents import analyze_netlist, optimize_bom, suggest_routing
 
