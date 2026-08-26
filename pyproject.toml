@@ -31,5 +31,9 @@ pre-commit = "^3.7"
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
 [tool.poetry.plugins."kiwi_plugins"]
 nexus-eda = "nexus_eda.plugin:register"
