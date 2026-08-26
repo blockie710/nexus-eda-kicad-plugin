@@ -1,13 +1,10 @@
-# See https://code.visualstudio.com/docs/python/formatting
-"*"
-[ /]"*
-".venv/"
-"__pycache__/"
-"*.pyc"
-".pytest_cache/"
-".ruff_cache/"
-".mypy_cache/"
-"*.egg-info/"
-"build/"
-"dist/"
-"
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pytest_cache/
+env/
+venv/
+.ENV/
+env.bak/
+venv.bak/
