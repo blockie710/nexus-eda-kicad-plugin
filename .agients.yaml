@@ -1,0 +1,7 @@
+trigger:
+  - "eda-market-investigation"
+  - "flux"
+  - "eda"
+  - "pcb"
+  - "kicad"
+  - "electronic-design"
