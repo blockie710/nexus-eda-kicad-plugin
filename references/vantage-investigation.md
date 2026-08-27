@@ -131,14 +131,57 @@ Hobbyists → Makers → Students → Startups → SMEs → Enterprise
 
 ## 3. Agentic Frameworks Comparison
 
-| Framework | Strengths | Weaknesses | EDA Suitability | License |
-|-----------|-----------|------------|-----------------|---------|
-| **AutoGen (MS)** | Multi-agent orchestration, tool use, group chats | Heavy dependency chain, can be overkill | ✅ Good for multi-agent EDA flow | MIT |
-| **CrewAI** | Role-based agents, simple API, memory support | Less flexible for complex workflows | ⚠️ Good for prototyping | Apache 2.0/MIT |
-| **LangGraph** | Stateful persistence, checkpointing, human-in-loop | Steeper learning curve | ✅ Best for DRC engine integration | MIT |
-| **LlamaIndex Agents** | Context-aware, RAG-native, good for file parsing | Less focused on multi-agent orchestration | ✅ Good for netlist/document analysis | Apache 2.0 |
+### Framework Details
 
-**Recommendation**: Use **AutoGen** for the primary multi-agent EDA flow (component agents, netlist agent, DRC agent, routing agent) and **LangGraph** for stateful workflow persistence (checkpointing DRC runs, session recovery).
+#### AutoGen (Microsoft)
+- **Tool Use**: Native function calling, agent-to-agent conversation via group chats. Supports custom agents with `register_function()`.
+- **Memory/Persistence**: Conversation history, message caching. No built-in checkpoint persistence (session lost on restart).
+- **Safety & Guardrails**: `Max Messages Termination`, `Human-in-Loop` agent for approval gates. Supports custom termination conditions.
+- **KiCad Plugin Compatibility**: Python 3.7+, runs in KiCad host. Can integrate via pcbnew Python API for plugin-driven actions.
+- **24GB VRAM**: Runs on host; LLM model served separately (llama.cpp). Memory-efficient orchestration layer.
+- **License**: MIT
+
+#### CrewAI
+- **Tool Use**: `@tool` decorator for custom functions. Built-in tools (search, file I/O, web scraping).
+- **Memory/Persistence**: Long-term memory (Redis/PostgreSQL), entity memory, context memory. Checkpointing via `CrewMemory`.
+- **Safety & Guardrails**: Agent backstories define behavioral constraints. Step-level callbacks for intervention.
+- **KiCad Plugin Compatibility**: Python 3.10+, compatible with Ubuntu 24.04 + Python 3.12.
+- **24GB VRAM**: Orchestration runs on CPU; GPU only for LLM inference.
+- **License**: Apache 2.0
+
+#### LangGraph (LangChain)
+- **Tool Use**: Built on LangChain tools. Pydantic schema validation for tool inputs.
+- **Memory/Persistence**: **`Checkpointer`** — full state snapshotting, thread resumption, time-travel debugging. First-class concept.
+- **Safety & Guardrails**: Node-level retry policies, fallback chains, conditional edges for safety gates. `Human` node for approvals.
+- **KiCad Plugin Compatibility**: Python 3.9+, LangChain ecosystem. Can wrap pcbnew API calls as tools.
+- **24GB VRAM**: Checkpointed state stored on disk; GPU only for LLM. Memory overhead is orchestration layer (~200-500MB).
+- **License**: MIT
+
+#### LlamaIndex Agents
+- **Tool Use**: Function-calling agents, ReAct agents. Tools can wrap any function. `QueryEngine` tools for RAG.
+- **Memory/Persistence**: `ChatMemoryBuffer` (token-limited), `ConversationSummaryMemory`, `ChatSummaryMemoryBuffer`. No native long-term persistence.
+- **Safety & Guardrails**: Input/output validators, guardrails via LLM judge prompts, structured output with Pydantic.
+- **KiCad Plugin Compatibility**: Python 3.8+, integrates with LlamaIndex ecosystem. Can parse netlist files as documents.
+- **24GB VRAM**: RAG pipeline runs on CPU; GPU for LLM only.
+- **License**: Apache 2.0
+
+#### OpenClaw Agent Framework
+- **Tool Use**: Plugin-based architecture with tool allowlists, identity binding for agents.
+- **Memory/Persistence**: Context-scoped memory via `AGENTS.md`, conversation summaries, session continuity.
+- **Safety & Guardrails**: Tool allowlisting, identity binding (MCP), prompt governance. Sovereign memory system (Honcho hybrid).
+- **KiCad Plugin Compatibility**: Python-based plugins, can wrap pcbnew API.
+- **24GB VRAM**: Local-first design, runs on RTX 4090+ GPUs.
+- **License**: Apache 2.0
+
+#### AetherLang
+- **Tool Use**: Declarative AI workflow orchestration with composable flows.
+- **Memory/Persistence**: State persistence via checkpoint/replay mechanism.
+- **Safety & Guardrails**: Built-in validation gates, error recovery, deterministic execution paths.
+- **KiCad Plugin Compatibility**: Lua scripting, can integrate with external tools.
+- **24GB VRAM**: Lightweight orchestration; GPU for model inference.
+- **License**: MIT
+
+**Recommendation**: Use **AutoGen** for primary multi-agent EDA flow (component analysis → netlist → DRC → routing) with **LangGraph** for stateful persistence/checkpointing of DRC runs and session recovery. Both are MIT-licensed and Python-based.
 
 ---
 
