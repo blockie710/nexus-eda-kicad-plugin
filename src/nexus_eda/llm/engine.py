@@ -18,16 +18,16 @@ import os
 import threading
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 import yaml
 
 __all__ = [
-    "LLMError",
     "LLMConfig",
     "LLMEngine",
-    "load_model",
+    "LLMError",
     "generate",
+    "load_model",
 ]
 
 
@@ -50,7 +50,7 @@ class LLMConfig:
     """Generation parameters, resolved from the manifest with overrides."""
 
     model_id: str
-    model_path: Optional[str] = None
+    model_path: str | None = None
     quant: str = "Q4_K_M"
     temperature: float = 0.1
     top_p: float = 0.9
@@ -61,8 +61,8 @@ class LLMConfig:
 
     @classmethod
     def from_manifest(
-        cls, manifest_path: Optional[str | os.PathLike] = None
-    ) -> "LLMConfig":
+        cls, manifest_path: str | os.PathLike | None = None
+    ) -> LLMConfig:
         """Load runtime defaults and the primary model entry from manifest."""
         path = Path(manifest_path) if manifest_path else _MANIFEST_PATH
         if not path.exists():
@@ -110,7 +110,7 @@ class LLMEngine:
         self._lock = threading.Lock()
 
     # -- model loading ------------------------------------------------------- #
-    def load(self) -> "LLMEngine":
+    def load(self) -> LLMEngine:
         """Lazy-load the underlying llama.cpp model.
 
         Looks for the model on disk via the ``NEXUS_LLM_MODEL_PATH`` env var.
@@ -153,10 +153,10 @@ class LLMEngine:
         self,
         prompt: str,
         *,
-        temperature: Optional[float] = None,
-        max_tokens: Optional[int] = None,
-        top_p: Optional[float] = None,
-        stream_callback: Optional[Any] = None,
+        temperature: float | None = None,
+        max_tokens: int | None = None,
+        top_p: float | None = None,
+        stream_callback: Any | None = None,
     ) -> str:
         """Generate text. If *stream_callback* is given, each token chunk is
         passed to it as it arrives (streaming). Returns the full completion."""
@@ -179,7 +179,7 @@ class LLMEngine:
                         output += delta
                         if stream_callback is not None:
                             stream_callback(delta)
-            except Exception as exc:  # noqa: BLE001
+            except Exception as exc:
                 raise LLMError(f"Generation failed: {exc}") from exc
 
         return output
@@ -188,10 +188,10 @@ class LLMEngine:
         self,
         prompt: str,
         *,
-        temperature: Optional[float] = None,
-        max_tokens: Optional[int] = None,
-        top_p: Optional[float] = None,
-        callback: Optional[Any] = None,
+        temperature: float | None = None,
+        max_tokens: int | None = None,
+        top_p: float | None = None,
+        callback: Any | None = None,
     ) -> str:
         """Explicit streaming alias for :meth:`generate`."""
         return self.generate(
@@ -206,13 +206,13 @@ class LLMEngine:
 # --------------------------------------------------------------------------- #
 # Convenience functions (module-level)
 # --------------------------------------------------------------------------- #
-_engine: Optional[LLMEngine] = None
+_engine: LLMEngine | None = None
 _engine_lock = threading.Lock()
 
 
 def load_model(
-    model_path: Optional[str] = None,
-    config: Optional[LLMConfig] = None,
+    model_path: str | None = None,
+    config: LLMConfig | None = None,
 ) -> LLMEngine:
     """Load (or return a cached) :class:`LLMEngine`.
 
@@ -241,11 +241,11 @@ def load_model(
 def generate(
     prompt: str,
     *,
-    engine: Optional[LLMEngine] = None,
-    temperature: Optional[float] = None,
-    max_tokens: Optional[int] = None,
-    top_p: Optional[float] = None,
-    stream_callback: Optional[Any] = None,
+    engine: LLMEngine | None = None,
+    temperature: float | None = None,
+    max_tokens: int | None = None,
+    top_p: float | None = None,
+    stream_callback: Any | None = None,
 ) -> str:
     """Generate text using a cached or provided engine.
 
@@ -254,6 +254,7 @@ def generate(
     model file is unavailable.
     """
     if engine is None:
+        global _engine
         with _engine_lock:
             if _engine is None:
                 _engine = LLMEngine(LLMConfig.from_manifest())

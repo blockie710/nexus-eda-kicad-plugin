@@ -16,9 +16,11 @@ pydantic = "^2.7"
 llama-cpp-python = { version = "^0.2.90", extras = ["server"] }
 pcbnew = { version = "^7.0", optional = true }
 requests = "^2.32"
+stripe = { version = "^10.0", optional = true }
 
 [tool.poetry.extras]
 kicad = ["pcbnew"]
+billing = ["stripe"]
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2"
@@ -30,6 +32,17 @@ pre-commit = "^3.7"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "RUF"]
+ignore = ["S110", "BLE001"]  # try-except-pass & blind-except are intentional for graceful degradation in billing service
+
+[tool.ruff.lint.per-file-ignores]
+"src/nexus_eda/billing/service.py" = ["S110", "BLE001"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

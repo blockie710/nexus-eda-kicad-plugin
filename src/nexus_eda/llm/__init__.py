@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 """Nexus-EDA LLM integration — llama.cpp binding wrapper, model loading, and prompts."""
 
-from .engine import LLMEngine, LLMError, load_model, generate
+from .engine import LLMEngine, LLMError, generate, load_model
 from .prompts import (
     NETLIST_ANALYSIS_PROMPT,
     ROUTING_SUGGESTION_PROMPT,
@@ -10,12 +10,12 @@ from .prompts import (
 )
 
 __all__ = [
-    "LLMEngine",
-    "LLMError",
-    "load_model",
-    "generate",
     "NETLIST_ANALYSIS_PROMPT",
     "ROUTING_SUGGESTION_PROMPT",
+    "LLMEngine",
+    "LLMError",
+    "generate",
+    "load_model",
     "netlist_analysis_prompt",
     "routing_suggestion_prompt",
 ]

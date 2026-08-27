@@ -30,38 +30,38 @@ class NexusEDABar(wx.Menu):
         self.Bind(wx.EVT_MENU, self._on_suggest_routing, route_item)
 
     def _on_analyze_netlist(self, event):
-        from .agents.netlist_analyzer import analyze_netlist
+        from .agents import analyze_netlist
 
         board = pcbnew.GetBoard()
         result = analyze_netlist(board)
         wx.MessageBox(
             f"Netlist analysis complete.\n\n"
-            f"Unrouted nets: {result['unrouted_count']}\n"
-            f"Warning: {result['severity']} issues found",
+            f"Unrouted nets: {result.unrouted_count}\n"
+            f"Warning: {result.severity} issues found",
             "Nexus-EDA",
             wx.OK | wx.ICON_INFORMATION,
         )
 
     def _on_optimize_bom(self, event):
-        from .agents.bom_optimizer import optimize_bom
+        from .agents import optimize_bom
 
         board = pcbnew.GetBoard()
         result = optimize_bom(board)
         wx.MessageBox(
             f"BOM optimization complete.\n\n"
-            f"Savings: ${result['total_savings']:.2f}/board\n"
-            f"Alternatives found: {result['alternatives_count']}",
+            f"Savings: ${result.total_savings:.2f}/board\n"
+            f"Alternatives found: {result.alternatives_count}",
             "Nexus-EDA",
             wx.OK | wx.ICON_INFORMATION,
         )
 
     def _on_suggest_routing(self, event):
-        from .agents.routing_agent import suggest_routing
+        from .agents import suggest_routing
 
         board = pcbnew.GetBoard()
         result = suggest_routing(board)
         wx.MessageBox(
-            f"Routing suggestion:\n{result['path_description']}",
+            f"Routing suggestion:\n{result.path_description}",
             "Nexus-EDA",
             wx.OK | wx.ICON_INFORMATION,
         )

@@ -4,15 +4,14 @@
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
 
 
 @dataclass
 class NetlistData:
     """Structured representation of a parsed KiCad netlist."""
     version: str = ""
-    components: Dict[str, Dict] = field(default_factory=dict)
-    nets: Dict[str, List[str]] = field(default_factory=dict)
+    components: dict[str, dict] = field(default_factory=dict)
+    nets: dict[str, list[str]] = field(default_factory=dict)
     # nets[net_name] = [node1, node2, ...] where node is "comp_ref/pin_num"
 
 
@@ -30,18 +29,18 @@ class NetlistParser:
         
         content = path.read_text(encoding='utf-8')
         print(f"[DEBUG] Raw content length: {len(content)}")
-        print(f"[DEBUG] First 200 chars: {repr(content[:200])}")
+        print(f"[DEBUG] First 200 chars: {content[:200]!r}")
         return self.parse_content(content)
     
     def parse_content(self, content: str) -> NetlistData:
         """Parse netlist content from string."""
-        print(f"[DEBUG] Parsing content: {repr(content[:100])}")
+        print(f"[DEBUG] Parsing content: {content[:100]!r}")
         self.data = NetlistData()
         
         # Remove comments and normalize whitespace
         content = re.sub(r'#.*', '', content)
         content = re.sub(r'\s+', ' ', content).strip()
-        print(f"[DEBUG] After cleanup: {repr(content[:100])}")
+        print(f"[DEBUG] After cleanup: {content[:100]!r}")
         
         # Parse top-level expressions
         tokens = self._tokenize(content)
@@ -67,7 +66,7 @@ class NetlistParser:
         print(f"[DEBUG] Final data: version='{self.data.version}', components={list(self.data.components.keys())}, nets={list(self.data.nets.keys())}")
         return self.data
     
-    def _tokenize(self, s: str) -> List[str]:
+    def _tokenize(self, s: str) -> list[str]:
         """Simple tokenizer for S-expressions."""
         tokens = []
         i = 0
@@ -85,7 +84,7 @@ class NetlistParser:
                 tokens.append(s[start:i])
         return tokens
     
-    def _skip_paren(self, tokens: List[str], i: int) -> int:
+    def _skip_paren(self, tokens: list[str], i: int) -> int:
         """Skip a parenthesized expression."""
         depth = 0
         start_i = i
@@ -100,7 +99,7 @@ class NetlistParser:
         print(f"[DEBUG] _skip_paren from {start_i} to {i} (unclosed)")
         return i
     
-    def _parse_kicad_netlist(self, tokens: List[str], i: int) -> int:
+    def _parse_kicad_netlist(self, tokens: list[str], i: int) -> int:
         """Parse (kicad_netlist ...) expression."""
         print(f"[DEBUG] _parse_kicad_netlist starting at token {i}: {tokens[i:i+10]}")
         depth = 1
@@ -149,7 +148,7 @@ class NetlistParser:
         
         return i
     
-    def _parse_version(self, tokens: List[str], i: int) -> int:
+    def _parse_version(self, tokens: list[str], i: int) -> int:
         """Parse (version ...) expression."""
         print(f"[DEBUG] _parse_version at token {i}: {tokens[i:i+5]}")
         if i >= len(tokens) or tokens[i] != '(':
@@ -168,7 +167,7 @@ class NetlistParser:
             i += 1
         return i
     
-    def _parse_components(self, tokens: List[str], i: int) -> int:
+    def _parse_components(self, tokens: list[str], i: int) -> int:
         """Parse (components ...) expression."""
         print(f"[DEBUG] _parse_components at token {i}: {tokens[i:i+5]}")
         if i >= len(tokens) or tokens[i] != '(':
@@ -191,7 +190,7 @@ class NetlistParser:
             i += 1
         return i
     
-    def _parse_component(self, tokens: List[str], i: int) -> int:
+    def _parse_component(self, tokens: list[str], i: int) -> int:
         """Parse (comp ...) expression."""
         print(f"[DEBUG] _parse_component at token {i}: {tokens[i:i+10]}")
         if i >= len(tokens) or tokens[i] != '(':
@@ -254,7 +253,7 @@ class NetlistParser:
             i += 1
         return i
     
-    def _parse_nets(self, tokens: List[str], i: int) -> int:
+    def _parse_nets(self, tokens: list[str], i: int) -> int:
         """Parse (nets ...) expression."""
         print(f"[DEBUG] _parse_nets at token {i}: {tokens[i:i+5]}")
         if i >= len(tokens) or tokens[i] != '(':
@@ -277,7 +276,7 @@ class NetlistParser:
             i += 1
         return i
     
-    def _parse_net(self, tokens: List[str], i: int) -> int:
+    def _parse_net(self, tokens: list[str], i: int) -> int:
         """Parse (net ...) expression."""
         print(f"[DEBUG] _parse_net at token {i}: {tokens[i:i+10]}")
         if i >= len(tokens) or tokens[i] != '(':
@@ -338,9 +337,9 @@ class ValidationResult:
     rule_id: str
     description: str
     severity: str  # 'error', 'warning', 'info'
-    component: Optional[str] = None
-    net: Optional[str] = None
-    details: Optional[str] = None
+    component: str | None = None
+    net: str | None = None
+    details: str | None = None
 
 
 class DesignRuleChecker:
@@ -354,14 +353,14 @@ class DesignRuleChecker:
             self._check_component_pad_count,
         ]
     
-    def check_netlist(self, netlist_data: NetlistData) -> List[ValidationResult]:
+    def check_netlist(self, netlist_data: NetlistData) -> list[ValidationResult]:
         """Run all DRC rules on the netlist data."""
         violations = []
         for rule in self.rules:
             violations.extend(rule(netlist_data))
         return violations
     
-    def _check_net_isolation(self, netlist_data: NetlistData) -> List[ValidationResult]:
+    def _check_net_isolation(self, netlist_data: NetlistData) -> list[ValidationResult]:
         """Check for nets with only one node (floating nets)."""
         violations = []
         for net_name, nodes in netlist_data.nets.items():
@@ -375,21 +374,20 @@ class DesignRuleChecker:
                 ))
         return violations
     
-    def _check_component_pad_count(self, netlist_data: NetlistData) -> List[ValidationResult]:
+    def _check_component_pad_count(self, netlist_data: NetlistData) -> list[ValidationResult]:
         """Check that components have reasonable number of connections."""
         violations = []
         # Count connections per component from nets
         connections = {}
-        for net_name, nodes in netlist_data.nets.items():
+        for nodes in netlist_data.nets.values():
             for node in nodes:
                 if '/' in node:
-                    comp_ref, pin = node.split('/', 1)
+                    comp_ref, _pin = node.split('/', 1)
                     connections[comp_ref] = connections.get(comp_ref, 0) + 1
         
         for comp_ref, count in connections.items():
-            if comp_ref in netlist_data.components:
-                # Simple heuristic: warn if > 50 connections (unlikely for most components)
-                if count > 50:
+            # Simple heuristic: warn if > 50 connections (unlikely for most components)
+            if comp_ref in netlist_data.components and count > 50:
                     violations.append(ValidationResult(
                         rule_id="COMP_PAD_COUNT",
                         description=f"Component '{comp_ref}' has {count} connections - unusually high",
@@ -408,7 +406,7 @@ def parse_netlist(filepath: str | Path) -> NetlistData:
 
 def validate_netlist(netlist_data: NetlistData, 
                     min_trace_width: float = 0.25, 
-                    min_clearance: float = 0.25) -> List[ValidationResult]:
+                    min_clearance: float = 0.25) -> list[ValidationResult]:
     """Convenience function to validate netlist data."""
     drc = DesignRuleChecker(min_trace_width, min_clearance)
     return drc.check_netlist(netlist_data)

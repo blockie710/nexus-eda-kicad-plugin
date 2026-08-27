@@ -9,16 +9,16 @@ The Python GUI module is used for headless rendering tests, the HTML
 preview, and as a reference for the C++ ImGui implementation.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Optional
+from dataclasses import dataclass
+
 from nexus_eda.netlist import NetlistData, ValidationResult
 
 __all__ = [
+    "COLORS",
     "NetlistViewer",
     "ViewerConfig",
     "render_netlist_html",
     "render_validation_results_html",
-    "COLORS",
 ]
 
 
@@ -48,7 +48,7 @@ class ViewerConfig:
     show_validation: bool = True
     highlight_unrouted: bool = True
     max_nets_display: int = 100
-    selected_net: Optional[str] = None
+    selected_net: str | None = None
 
 
 class NetlistViewer:
@@ -61,13 +61,13 @@ class NetlistViewer:
     - Reference implementation
     """
     
-    def __init__(self, config: Optional[ViewerConfig] = None):
+    def __init__(self, config: ViewerConfig | None = None):
         self.config = config or ViewerConfig()
     
     def render_text(
         self,
         netlist: NetlistData,
-        violations: Optional[List[ValidationResult]] = None
+        violations: list[ValidationResult] | None = None
     ) -> str:
         """Render the netlist as formatted ASCII text."""
         lines = []
@@ -125,7 +125,7 @@ class NetlistViewer:
     def render_html(
         self,
         netlist: NetlistData,
-        violations: Optional[List[ValidationResult]] = None
+        violations: list[ValidationResult] | None = None
     ) -> str:
         """Render the netlist as styled HTML."""
         return render_netlist_html(netlist, violations, self.config)
@@ -133,8 +133,8 @@ class NetlistViewer:
 
 def render_netlist_html(
     netlist: NetlistData,
-    violations: Optional[List[ValidationResult]] = None,
-    config: Optional[ViewerConfig] = None
+    violations: list[ValidationResult] | None = None,
+    config: ViewerConfig | None = None
 ) -> str:
     """Render netlist data as HTML with Nexus-EDA styling."""
     config = config or ViewerConfig()
@@ -254,7 +254,7 @@ def render_netlist_html(
 
 
 def render_validation_results_html(
-    violations: List[ValidationResult],
+    violations: list[ValidationResult],
     title: str = "Validation Results"
 ) -> str:
     """Render validation results as a compact HTML panel."""

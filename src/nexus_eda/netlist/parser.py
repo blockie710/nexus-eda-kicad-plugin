@@ -10,7 +10,6 @@ This module provides:
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Optional
 
 
 @dataclass
@@ -23,8 +22,8 @@ class NetlistData:
         nets: Dict of net names to lists of node identifiers (e.g. "R1/1")
     """
     version: str = ""
-    components: Dict[str, Dict] = field(default_factory=dict)
-    nets: Dict[str, List[str]] = field(default_factory=dict)
+    components: dict[str, dict] = field(default_factory=dict)
+    nets: dict[str, list[str]] = field(default_factory=dict)
 
 
 @dataclass
@@ -42,9 +41,9 @@ class ValidationResult:
     rule_id: str
     description: str
     severity: str
-    component: Optional[str] = None
-    net: Optional[str] = None
-    details: Optional[str] = None
+    component: str | None = None
+    net: str | None = None
+    details: str | None = None
 
 
 class NetlistParser:
@@ -231,7 +230,7 @@ class DesignRuleChecker:
             self._check_component_pad_count,
         ]
     
-    def check_netlist(self, netlist_data: NetlistData) -> List[ValidationResult]:
+    def check_netlist(self, netlist_data: NetlistData) -> list[ValidationResult]:
         """Run all DRC rules on the netlist data.
         
         Args:
@@ -245,7 +244,7 @@ class DesignRuleChecker:
             violations.extend(rule(netlist_data))
         return violations
     
-    def _check_net_isolation(self, netlist_data: NetlistData) -> List[ValidationResult]:
+    def _check_net_isolation(self, netlist_data: NetlistData) -> list[ValidationResult]:
         """Check for nets with fewer than 2 nodes (floating or unconnected nets)."""
         violations = []
         for net_name, nodes in netlist_data.nets.items():
@@ -259,22 +258,21 @@ class DesignRuleChecker:
                 ))
         return violations
     
-    def _check_component_pad_count(self, netlist_data: NetlistData) -> List[ValidationResult]:
+    def _check_component_pad_count(self, netlist_data: NetlistData) -> list[ValidationResult]:
         """Check that components have reasonable number of connections.
         
         Warns about components with unusually high (>50) connection counts.
         """
         violations = []
         connections = {}
-        for net_name, nodes in netlist_data.nets.items():
+        for nodes in netlist_data.nets.values():
             for node in nodes:
                 if '/' in node:
-                    comp_ref, pin = node.split('/', 1)
+                    comp_ref, _pin = node.split('/', 1)
                     connections[comp_ref] = connections.get(comp_ref, 0) + 1
         
         for comp_ref, count in connections.items():
-            if comp_ref in netlist_data.components:
-                if count > 50:
+            if comp_ref in netlist_data.components and count > 50:
                     violations.append(ValidationResult(
                         rule_id="COMP_PAD_COUNT",
                         description=f"Component '{comp_ref}' has {count} connections - unusually high",
@@ -302,7 +300,7 @@ def validate_netlist(
     netlist_data: NetlistData,
     min_trace_width: float = 0.25,
     min_clearance: float = 0.25
-) -> List[ValidationResult]:
+) -> list[ValidationResult]:
     """Convenience function to validate netlist data.
     
     Args:

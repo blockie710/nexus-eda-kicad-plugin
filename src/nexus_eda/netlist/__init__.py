@@ -2,19 +2,19 @@
 """Netlist parsing package for Nexus-EDA."""
 
 from .parser import (
-    NetlistParser,
+    DesignRuleChecker,
     NetlistData,
+    NetlistParser,
+    ValidationResult,
     parse_netlist,
     validate_netlist,
-    ValidationResult,
-    DesignRuleChecker,
 )
 
 __all__ = [
-    "NetlistParser",
+    "DesignRuleChecker",
     "NetlistData",
+    "NetlistParser",
+    "ValidationResult",
     "parse_netlist",
     "validate_netlist",
-    "ValidationResult",
-    "DesignRuleChecker",
 ]
