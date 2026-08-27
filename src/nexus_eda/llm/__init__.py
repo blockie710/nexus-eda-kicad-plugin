@@ -5,8 +5,10 @@ from .engine import LLMEngine, LLMError, load_model, generate
 from .prompts import (
     NETLIST_ANALYSIS_PROMPT,
     ROUTING_SUGGESTION_PROMPT,
+    DRC_ANALYSIS_PROMPT,
     netlist_analysis_prompt,
     routing_suggestion_prompt,
+    drc_analysis_prompt,
 )
 
 __all__ = [
@@ -16,6 +18,8 @@ __all__ = [
     "generate",
     "NETLIST_ANALYSIS_PROMPT",
     "ROUTING_SUGGESTION_PROMPT",
+    "DRC_ANALYSIS_PROMPT",
     "netlist_analysis_prompt",
     "routing_suggestion_prompt",
+    "drc_analysis_prompt",
 ]

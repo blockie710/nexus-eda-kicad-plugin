@@ -12,8 +12,10 @@ from typing import Any
 __all__ = [
     "NETLIST_ANALYSIS_PROMPT",
     "ROUTING_SUGGESTION_PROMPT",
+    "DRC_ANALYSIS_PROMPT",
     "netlist_analysis_prompt",
     "routing_suggestion_prompt",
+    "drc_analysis_prompt",
 ]
 
 
@@ -61,6 +63,30 @@ SUGGESTION:"""
 
 
 # --------------------------------------------------------------------------- #
+# DRC analysis template
+# --------------------------------------------------------------------------- #
+DRC_ANALYSIS_PROMPT = """\\
+You are Nexus-EDA, an expert PCB design review assistant running locally on llama.cpp.
+Your task is to analyze a list of DRC (Design Rule Check) violations and produce
+a clear, actionable summary.
+
+VIOLATIONS:
+{violations}
+
+INSTRUCTIONS:
+- Summarise the total number of violations and their severity breakdown.
+- Group similar violation types together.
+- For each group, provide a concise explanation of the root cause.
+- Provide practical, actionable fix suggestions for the top 3 most critical issues.
+- If there are no violations, state that the board passes DRC.
+- Use "low", "medium", or "high" for overall severity.
+- Output a JSON object with keys: summary, severity, issues, suggestions.
+- Keep response concise and JSON-valid.
+
+ANALYSIS:"""
+
+
+# --------------------------------------------------------------------------- #
 # Rendering helpers
 # --------------------------------------------------------------------------- #
 def _truncate(value: Any, limit: int = 2000) -> str:
@@ -101,3 +127,26 @@ def routing_suggestion_prompt(
         available_layers=available_layers,
         design_rules=_truncate(design_rules, 300),
     )
+
+
+def drc_analysis_prompt(violations: str, total: int = 0, **extra: Any) -> str:
+    """Render the DRC analysis prompt from a violations text block.
+
+    Args:
+        violations: Text listing DRC violations (one per line).
+        total: Total violation count (used in the prompt for context).
+        **extra: Additional template fields (each truncated to 500 chars).
+
+    Returns:
+        A formatted prompt string ready for LLM generation.
+    """
+    fields: dict[str, Any] = {
+        "violations": _truncate(violations),
+    }
+    for key, val in extra.items():
+        fields[key] = _truncate(val, 500)
+    rendered = DRC_ANALYSIS_PROMPT.format(**fields)
+    # The template also has {total} available if needed via f-string substitution
+    if total:
+        rendered = rendered.replace("{total}", str(total))
+    return rendered

@@ -1,8 +1,21 @@
 # SPDX-License-Identifier: Apache-2.0
-"""AI agents for Nexus-EDA — stub implementations for Phase 1."""
+"""AI agents for Nexus-EDA — Phase 1 stubs + Phase 2 DRC agent.
+
+Phase 2 (T2-W5.2): DRC agent that integrates with pcbnew's DRC engine
+and parses violation reports.  See :mod:`nexus_eda.agents.drc_agent`.
+"""
 
 from dataclasses import dataclass
 from typing import Any
+
+from .drc_agent import (
+    DRCReport,
+    DRCViolation,
+    DRCAgent,
+    Severity,
+    parse_drc_report,
+    run_drc,
+)
 
 
 @dataclass
@@ -72,3 +85,20 @@ def suggest_routing(board: Any) -> RoutingSuggestion:
         confidence=0.0,
         violations=[],
     )
+
+
+__all__ = [
+    "NetlistAnalysisResult",
+    "BOMOptimizationResult",
+    "RoutingSuggestion",
+    "analyze_netlist",
+    "optimize_bom",
+    "suggest_routing",
+    # DRC agent (Phase 2 — T2-W5.2)
+    "DRCReport",
+    "DRCViolation",
+    "DRCAgent",
+    "Severity",
+    "parse_drc_report",
+    "run_drc",
+]

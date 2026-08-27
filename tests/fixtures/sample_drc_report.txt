@@ -1,0 +1,30 @@
+# Sample DRC report for testing the DRC agent parser.
+# This mimics the format pcbnew exports when saving a DRC report.
+#
+DRC report (severity 2 = error, 1 = warning, 0 = info)
+Options:
+  Minimum clearance: 0.15 mm
+  Check unrouted: yes
+  Check placement: yes
+
+************ Results **************
+
+#0 (error) Clearance - Pad U1-7 to Pad C1-1 on net 'VCC'
+    Clearance is 0.10 mm, minimum is 0.15 mm
+    Pad U1 pin 7 at (X=10.2mm, Y=15.3mm)
+    Pad C1 pin 1 at (X=10.3mm, Y=15.3mm)
+
+#1 (warning) Unconnected - Pin U1-19 on net 'SCK' is not connected
+    Component U1 pin 19
+    Net name: 'SCK'
+
+#2 (error) Minimum trace width - Trace on net 'GND' is 0.08 mm, minimum is 0.15 mm
+    Segment from (X=5.1mm, Y=8.2mm) to (X=6.5mm, Y=8.2mm)
+
+#3 (info) Solder paste - SMD pad R1-1 has no paste layer
+    Component R1, pad 1
+
+#4 (warning) Pad outline - Pad R1-1 is outside of its component courtyard
+    Component R1, pad 1
+
+************ End ************
