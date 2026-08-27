@@ -1,0 +1,165 @@
+# Nexus-EDA Support Automation Configuration
+# Phase 5: Customer Support Automation — Ticket Routing & FAQ Bot
+# This file configures the support automation subsystem. If absent, built-in
+# defaults from nexus_eda/support/config.py are used.
+
+# Categories for ticket routing. Each category has keywords that are matched
+# (via TF-IDF) against ticket subject + body text. The best-matching category
+# wins. When keyword confidence is below confidence_threshold, the router
+# falls back to the local LLM (if available).
+categories:
+  - name: billing
+    label: "Billing & Subscriptions"
+    description: "Questions about Stripe subscriptions, invoices, refunds, and pricing tiers."
+    keywords:
+      - refund
+      - invoice
+      - subscription
+      - billing
+      - charge
+      - stripe
+      - cancel
+      - pricing
+      - payment
+      - "billing cycle"
+      - upgrade
+      - downgrade
+      - pro
+      - enterprise
+      - maker
+      - overcharge
+      - dispute
+      - receipt
+      - "failed payment"
+    agent_profile: nexus-minimal
+    priority: 4
+    sla_hours: 4.0
+
+  - name: technical
+    label: "Technical Support"
+    description: "Installation issues, plugin errors, pcbnew integration, and local LLM setup."
+    keywords:
+      - error
+      - install
+      - crash
+      - plugin
+      - pcbnew
+      - "ki cad"
+      - kicad
+      - llama
+      - "load model"
+      - cuda
+      - vram
+      - gpu
+      - trace
+      - exception
+      - "stack trace"
+      - windows
+      - python
+      - "import error"
+      - runtime
+      - hang
+      - freeze
+      - driver
+    agent_profile: nexus-llm
+    priority: 5
+    sla_hours: 8.0
+
+  - name: feature
+    label: "Feature Requests & Feedback"
+    description: "Suggestions for new features, design improvements, and capability requests."
+    keywords:
+      - feature
+      - request
+      - suggestion
+      - roadmap
+      - "would be nice"
+      - "could you add"
+      - enhancement
+      - improvement
+      - missing
+      - wish
+      - idea
+      - proposal
+      - feedback
+      - integrate
+      - "support for"
+    agent_profile: nexus-fast
+    priority: 2
+    sla_hours: 48.0
+
+  - name: bug
+    label: "Bug Reports"
+    description: "Confirmed or suspected bugs, crashes, incorrect output from agents."
+    keywords:
+      - bug
+      - "bug report"
+      - crash
+      - broken
+      - wrong
+      - incorrect
+      - "does not work"
+      - fails
+      - failure
+      - regression
+      - glitch
+      - malfunction
+      - unexpected
+      - issue
+      - "not working"
+    agent_profile: nexus-llm
+    priority: 5
+    sla_hours: 6.0
+
+# FAQ entries for the FAQ bot. The bot uses TF-IDF cosine similarity to find
+# the best-matching entry, then optionally uses the local LLM to generate a
+# grounded answer using the top matches as RAG context.
+faq:
+  - question: "How do I install the Nexus-EDA KiCad plugin?"
+    answer: |
+      Open KiCad's Plugin Manager (Tools → Plugin and Content Manager),
+      search for 'Nexus-EDA', click Install, and restart KiCad.
+      Alternatively, run `pip install -e .` from the plugin directory,
+      then point KiCad to the installed package.
+    keywords: [install, installation, plugin, manager, pip, kicad, kicad-plugin]
+    category: technical
+    confidence_boost: 1.2
+
+  - question: "What are the pricing tiers?"
+    answer: |
+      Nexus-EDA offers four tiers: Free (1 project, community models),
+      Maker ($19/mo, 10 projects, Qwen2.5-7B),
+      Pro ($49/mo, unlimited projects, Qwen3-Coder-32B),
+      and Enterprise (custom pricing, ITAR/GDPR compliance, dedicated support).
+    keywords: [pricing, price, cost, tiers, free, maker, pro, enterprise, subscription, plan]
+    category: billing
+    confidence_boost: 1.0
+
+  - question: "How do I cancel or downgrade my subscription?"
+    answer: |
+      Visit your account page at app.nexuseda.com/account/billing,
+      click 'Manage Subscription', and select 'Cancel Plan' or 'Downgrade'.
+      You'll retain Pro features until the end of the current billing period.
+      No prorated refunds are issued for downgrades, but you may request
+      a full refund within 7 days of a new payment.
+    keywords: [cancel, downgrade, subscription, billing, refund, account, stripe]
+    category: billing
+    confidence_boost: 1.2
+
+# LLM model assignments for fallback classification and answer generation.
+router_fallback_model: "Qwen2.5-Coder-7B-Q4_K_M"
+faq_fallback_model: "Qwen2.5-Coder-7B-Q4_K_M"
+
+# Minimum confidence for keyword-based routing before LLM fallback kicks in.
+confidence_threshold: 0.5
+
+# LLM generation parameters (used when LLM fallback/answer generation runs).
+llm_max_tokens: 512
+llm_temperature: 0.1
+
+# Auto-reply settings: when enabled, the router generates suggested replies
+# for tickets in the listed categories.
+auto_reply: false
+auto_reply_categories:
+  - billing
+  - technical
