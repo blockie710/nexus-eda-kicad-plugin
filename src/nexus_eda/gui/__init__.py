@@ -53,17 +53,17 @@ class ViewerConfig:
 
 class NetlistViewer:
     """Headless netlist viewer that can render to HTML or text.
-    
+
     This class mirrors the ImGui netlist viewer that will be implemented
     in C++ for the native KiCad plugin. The Python version is used for:
     - Headless testing and verification
     - HTML preview generation
     - Reference implementation
     """
-    
+
     def __init__(self, config: ViewerConfig | None = None):
         self.config = config or ViewerConfig()
-    
+
     def render_text(
         self,
         netlist: NetlistData,
@@ -79,7 +79,7 @@ class NetlistViewer:
         lines.append(f"  Components: {len(netlist.components)}")
         lines.append(f"  Nets: {len(netlist.nets)}")
         lines.append("")
-        
+
         if self.config.show_components and netlist.components:
             lines.append("-" * 60)
             lines.append("  COMPONENTS")
@@ -89,24 +89,24 @@ class NetlistViewer:
                 footprint = fields.get('Footprint', 'N/A')
                 lines.append(f"    {ref:6s} | {value:20s} | {footprint}")
             lines.append("")
-        
+
         if self.config.show_nets and netlist.nets:
             lines.append("-" * 60)
             lines.append("  NETS")
             lines.append("-" * 60)
-            
+
             display_nets = list(netlist.nets.items())[:self.config.max_nets_display]
             for net_name, nodes in display_nets:
                 prefix = "[*]" if self.config.selected_net == net_name else "   "
                 lines.append(f"  {prefix} {net_name} ({len(nodes)} nodes)")
                 for node in nodes:
                     lines.append(f"       -> {node}")
-            
+
             if len(netlist.nets) > self.config.max_nets_display:
                 remaining = len(netlist.nets) - self.config.max_nets_display
                 lines.append(f"       ... and {remaining} more nets")
             lines.append("")
-        
+
         if self.config.show_validation and violations:
             lines.append("-" * 60)
             lines.append("  VALIDATION RESULTS")
@@ -118,10 +118,10 @@ class NetlistViewer:
                 if target:
                     lines.append(f"       Target: {target}")
                 lines.append("")
-        
+
         lines.append("=" * 60)
         return "\n".join(lines)
-    
+
     def render_html(
         self,
         netlist: NetlistData,
@@ -138,12 +138,12 @@ def render_netlist_html(
 ) -> str:
     """Render netlist data as HTML with Nexus-EDA styling."""
     config = config or ViewerConfig()
-    
+
     # Build CSS variables
     css_vars = "\n".join(
         f"            --{k}: {v};" for k, v in COLORS.items()
     )
-    
+
     parts = []
     parts.append("""<!DOCTYPE html>
 <html>
@@ -198,7 +198,7 @@ def render_netlist_html(
     </style>
 </head>
 <body>""")
-    
+
     # Header
     parts.append(f"""<div class="header">
     <h1>Nexus-EDA Netlist Viewer</h1>
@@ -208,7 +208,7 @@ def render_netlist_html(
         <div class="stat"><span class="stat-label">Nets:</span> <span class="stat-value">{len(netlist.nets)}</span></div>
     </div>
 </div>""")
-    
+
     # Components
     if config.show_components and netlist.components:
         parts.append('<div class="section"><div class="section-title">Components</div><table>')
@@ -218,7 +218,7 @@ def render_netlist_html(
             footprint = fields.get('Footprint', 'N/A')
             parts.append(f'<tr><td>{ref}</td><td>{value}</td><td>{footprint}</td></tr>')
         parts.append('</tbody></table></div>')
-    
+
     # Nets
     if config.show_nets and netlist.nets:
         parts.append('<div class="section"><div class="section-title">Nets</div><ul class="net-list">')
@@ -233,7 +233,7 @@ def render_netlist_html(
             remaining = len(netlist.nets) - config.max_nets_display
             parts.append(f'<li class="net-item"><div class="net-nodes">... and {remaining} more nets</div></li>')
         parts.append('</ul></div>')
-    
+
     # Validation
     if config.show_validation and violations:
         parts.append('<div class="section"><div class="section-title">Validation Results</div>')
@@ -246,10 +246,10 @@ def render_netlist_html(
                 parts.append(f' <span style="color: var(--accent);">[{target}]</span>')
             parts.append('</div>')
         parts.append('</div>')
-    
+
     # Footer
     parts.append('</body></html>')
-    
+
     return "\n".join(parts)
 
 
@@ -259,7 +259,7 @@ def render_validation_results_html(
 ) -> str:
     """Render validation results as a compact HTML panel."""
     parts = [f'<div class="section"><div class="section-title">{title}</div>']
-    
+
     if not violations:
         parts.append('<div style="color: var(--success); padding: 12px;">&#10003; No violations found</div>')
     else:
@@ -273,6 +273,6 @@ def render_validation_results_html(
             if v.details:
                 parts.append(f'<div style="color: var(--text-secondary); font-size: 12px; margin-top: 4px;">{v.details}</div>')
             parts.append('</div>')
-    
+
     parts.append('</div>')
     return "\n".join(parts)

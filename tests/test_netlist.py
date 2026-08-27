@@ -8,7 +8,7 @@ import tempfile
 # Ensure src is on path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from nexus_eda.netlist import parse_netlist, validate_netlist, NetlistData
+from nexus_eda.netlist import NetlistData, parse_netlist, validate_netlist
 
 
 def _write_temp(content: str) -> str:

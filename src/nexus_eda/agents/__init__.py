@@ -26,7 +26,7 @@ class BOMOptimizationResult:
 class RoutingSuggestion:
     path_description: str
     estimated_length: float
-    confidence: float  # 0.0–1.0
+    confidence: float  # 0.0-1.0
     violations: list[str]
 
 

@@ -68,7 +68,7 @@ class LLMConfig:
         if not path.exists():
             raise LLMError(f"Manifest not found: {path}")
 
-        with open(path, "r", encoding="utf-8") as fh:
+        with open(path, encoding="utf-8") as fh:
             data = yaml.safe_load(fh)
 
         runtime = data.get("runtime", {})

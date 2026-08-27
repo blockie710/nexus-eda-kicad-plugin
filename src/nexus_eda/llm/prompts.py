@@ -54,7 +54,7 @@ INSTRUCTIONS:
 - Avoid obstacles listed above.
 - Prefer the shortest path that minimizes via count.
 - Estimate total trace length in mm.
-- Provide confidence as 0.0–1.0.
+- Provide confidence as 0.0-1.0.
 - Output a JSON object with keys: path_description, estimated_length, confidence, violations.
 
 SUGGESTION:"""
