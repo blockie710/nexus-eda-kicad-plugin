@@ -1,0 +1,148 @@
+# Agent Profile Configuration for Nexus-EDA
+# Optimal free model assignments per agent specialty
+# RTX 4090 (24GB VRAM), CUDA 13.3.1, Ada Lovelace
+
+profiles:
+  # Primary LLM inference — coding, netlist analysis, DRC
+  nexus-llm:
+    model: "Qwen3-Coder-32B-Q4_K_M"
+    vram_gb: 18
+    context: 128K
+    specialties: [coding, reasoning, netlist-analysis, DRC-violation-detection]
+    license: "Qwen2.5"
+    source: "HuggingFace"
+    notes: "Primary workhorse. Handles complex reasoning tasks."
+
+  # Fast agent tasks — BOM optimization, light parsing
+  nexus-fast:
+    model: "Qwen2.5-Coder-7B-Q4_K_M"
+    vram_gb: 6
+    context: 128K
+    specialties: [fast-response, BOM-optimization, file-parsing, autocomplete]
+    license: "Qwen2.5"
+    source: "HuggingFace"
+    notes: "Low-latency agent for repetitive/parallel tasks."
+
+  # Spatial reasoning — 3D visualization, routing suggestions
+  nexus-spatial:
+    model: "DeepSeek-Coder-V2-23B-Q4_K_M"
+    vram_gb: 16
+    context: 128K
+    specialties: [spatial-reasoning, routing-suggestions, trace-path-optimization]
+    license: "MIT"
+    source: "HuggingFace"
+    notes: "For geometric/pathfinding tasks."
+
+  # Math/reasoning — SI/PI analysis, thermal calculations
+  nexus-math:
+    model: "DeepSeek-R1-Distill-7B-Q4_K_M"
+    vram_gb: 6
+    context: 128K
+    specialties: [math-reasoning, SI-PI-analysis, thermal-calculations, DRC-math]
+    license: "MIT"
+    source: "HuggingFace"
+    notes: "Strong at mathematical computations."
+
+  # Vision — 3D board analysis, component visual matching
+  nexus-vision:
+    model: "Qwen2.5-VL-7B-Q4_K_M"
+    vram_gb: 7
+    context: 8K
+    specialties: [vision-analysis, 3D-board-inspection, component-identification]
+    license: "Qwen2.5"
+    source: "HuggingFace"
+    notes: "Multimodal for visual inspection tasks."
+
+  # Orchestration — multi-agent coordination, workflow state
+  nexus-orchestrator:
+    model: "Llama-3.1-8B-Q4_K_M"
+    vram_gb: 7
+    context: 128K
+    specialties: [workflow-orchestration, state-management, guardrail-checks]
+    license: "Llama-3.1"
+    source: "Meta"
+    notes: "Coordinates other agents, enforces approval gates."
+
+  # Minimal — GUI labels, billing, trusted boundary operations
+  nexus-minimal:
+    model: "TinyLlama-1.1B-Q4_0"
+    vram_gb: 1
+    context: 2K
+    specialties: [gui-labels, billing-operations, minimal-reasoning, trusted-boundary]
+    license: "Apache 2.0"
+    source: "TinyLlama"
+    notes: "Lightweight, always-on for simple tasks."
+
+# Agent-to-Specialty Mapping
+# Phase 2: Agent Orchestration
+phase2:
+  agent: "nexus-llm"
+  tasks: ["T2-W5.1", "T2-W5.2", "T2-W5.3"]
+  fallback: "nexus-fast"
+
+phase2_fast:
+  agent: "nexus-fast"
+  tasks: ["T2-W6.1", "T2-W6.2", "T2-W6.3"]
+  fallback: "nexus-minimal"
+
+phase2_spatial:
+  agent: "nexus-spatial"
+  tasks: ["T2-W6.3"]
+  fallback: "nexus-llm"
+
+# Phase 3: 3D Viewer + Physics
+phase3:
+  agent: "nexus-vision"
+  tasks: ["T3-W9.1"]
+  fallback: "nexus-spatial"
+
+phase3_math:
+  agent: "nexus-math"
+  tasks: ["T3-W10.1", "T3-W10.2", "T3-W11.1"]
+  fallback: "nexus-llm"
+
+phase3_fast:
+  agent: "nexus-fast"
+  tasks: ["T3-W11.2", "T3-W12"]
+  fallback: "nexus-minimal"
+
+# Phase 4: Sovereign Data
+phase4_trusted:
+  agent: "nexus-minimal"
+  tasks: ["T4-W15.1", "T4-W15.2", "T4-W15.3"]
+  notes: "Trusted boundary — minimal model for data scrubbing"
+
+phase4_compliance:
+  agent: "nexus-math"
+  tasks: ["T4-W16.1", "T4-W16.2", "T4-W17.1"]
+  fallback: "nexus-llm"
+
+phase4_fast:
+  agent: "nexus-fast"
+  tasks: ["T4-W17.2", "T4-W18"]
+  fallback: "nexus-minimal"
+
+# Phase 5: SaaS Launch
+phase5_marketing:
+  agent: "nexus-minimal"
+  tasks: ["T5-W21.1", "T5-W22.1", "T5-W23.1"]
+  notes: "Cost-efficient for marketing content"
+
+phase5_support:
+  agent: "nexus-fast"
+  tasks: ["T5-W21.2", "T5-W22.2", "T5-W23.2"]
+  fallback: "nexus-minimal"
+
+phase5_analytics:
+  agent: "nexus-orchestrator"
+  tasks: ["T5-W24", "T5-W25-W26"]
+  fallback: "nexus-math"
+
+# Dispatch Model Priority
+# 1. Use dedicated model for agent specialty
+# 2. Fall back to nexus-llm (32B) if complexity exceeds
+# 3. Fall back to nexus-fast (7B) if speed > depth
+# 4. Fall back to nexus-minimal (1.1B) if task is simple/trusted
+#
+# Research tasks: Use laguna-s-2.1:free (NOT gemma4:12b — produces poor output)
+# Never use parallel subagents with web_search — use direct httpx API calls instead

@@ -129,3 +129,20 @@ pydantic>=2.7            # Structured output validation
 2. Bootstrap with `cargo new --lib` or Python KiCad plugin template
 3. Set up GitHub Actions CI (lint + test + release)
 4. Draft Phase 2 spec (cloud collaboration, autonomous routing)
+
+---
+
+## 8. Extended Roadmap (Phases 1-5)
+See `references/eda-phase2-5-plan.md` for full Phase 2-5 details.
+
+| Phase | Timeline | Goal | Key Deliverable |
+|-------|----------|------|-----------------|
+| **Phase 1** | Months 1-3 | Foundation | Open-source KiCad plugin (Apache 2.0) |
+| **Phase 2** | Months 4-6 | Agent Orchestration | Multi-agent DRC + routing, AutoGen + LangGraph |
+| **Phase 3** | Months 7-9 | 3D Viewer + Physics | Native DX12/Vulkan 3D, SI/PI + thermal analysis |
+| **Phase 4** | Months 10-12 | Sovereign Data | SABLE-inspired NDA-safe architecture, Enterprise tier |
+| **Phase 5** | Months 13-15 | SaaS Launch | Paid tiers ($19-49/mo), marketing, first revenue |
+
+**Model Matrix:** Qwen3-Coder 32B (primary, 18GB), Qwen2.5-Coder 7B (fast, 6GB), DeepSeek-Coder-V2 23B (spatial, 16GB), Llama 3.1 8B (orchestration, 7GB), TinyLlama 1.1B (GUI/minimal, 1GB)
+
+**Agent Profile Configuration:** `/profiles/eda-agents.yaml` (to be created)
