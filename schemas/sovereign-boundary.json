@@ -1,0 +1,91 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Nexus-EDA Sovereign Boundary Policy",
+  "description": "JSON schema for the sovereign data boundary policy configuration file.",
+  "type": "object",
+  "required": ["version", "entry_points"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Manifest version",
+      "default": "1.0.0"
+    },
+    "entry_points": {
+      "type": "array",
+      "description": "List of allowed entry point names",
+      "items": {
+        "type": "string"
+      }
+    },
+    "policy": {
+      "type": "object",
+      "properties": {
+        "network_isolation": {
+          "type": "boolean",
+          "default": true,
+          "description": "Block all export operations referencing network endpoints"
+        },
+        "non_training": {
+          "type": "boolean",
+          "default": true,
+          "description": "Refuse any data path that could reach model training"
+        },
+        "require_approval_for_export": {
+          "type": "boolean",
+          "default": true,
+          "description": "Require manual approval for export-family entry points"
+        },
+        "strip_pdk_paths": {
+          "type": "boolean",
+          "default": true
+        },
+        "strip_project_paths": {
+          "type": "boolean",
+          "default": true
+        },
+        "strip_model_paths": {
+          "type": "boolean",
+          "default": true
+        },
+        "strip_user_id": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "encryption": {
+      "type": "object",
+      "properties": {
+        "algorithm": {
+          "type": "string",
+          "enum": ["AES-256-GCM"],
+          "default": "AES-256-GCM"
+        },
+        "key_derivation": {
+          "type": "string",
+          "enum": ["PBKDF2-HMAC-SHA256"],
+          "default": "PBKDF2-HMAC-SHA256"
+        },
+        "iterations": {
+          "type": "integer",
+          "default": 600000
+        }
+      }
+    },
+    "compliance": {
+      "type": "object",
+      "properties": {
+        "gdpr": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable GDPR Article 15-17 compliance APIs"
+        },
+        "itar": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable ITAR compliance audit trail (Defense tier)"
+        }
+      }
+    }
+  }
+}

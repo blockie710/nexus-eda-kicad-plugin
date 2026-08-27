@@ -1,0 +1,32 @@
+Nexus-EDA
+v1.0.0 "Enterprise with Sovereign Data"
+
+Copyright holders: blockie / Nexus Signalworks
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this software except in compliance with the License.
+
+This distribution contains the following sub-components with additional
+licensing notes:
+
+1. Sovereign Data Boundary (src/nexus_eda/sovereign/)
+   - AES-256-GCM encrypted storage
+   - Audit trail with hash-chain signatures
+   - GDPR/ITAR compliance modules
+   All licensed under Apache 2.0.
+
+2. Commercial Tier Features
+   - SSO/SAML integration
+   - ITAR audit trail (enterprise tier)
+   - Multi-agent orchestration (Phase 2)
+   - 3D viewer (Phase 3)
+   These require a Nexus-EDA Enterprise or Defense license.
+
+3. Third-party model weights
+   The software does not ship with model weights.  Models are downloaded
+   separately by the user from HuggingFace and cached locally.  Each model's
+   license applies to that model file only.  The software enforces a
+   non-training guarantee: no data processed by the sovereign boundary is
+   used to train or fine-tune any model.
+
+SPDX-License-Identifier: Apache-2.0

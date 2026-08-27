@@ -8,7 +8,7 @@ tests, CI, headless scripts), the plugin import is deferred and guarded so
 that the LLM, agents, and other pure-Python helpers remain usable.
 """
 
-__version__ = "0.1.0"
+__version__ = "1.0.0"
 __all__ = ["register"]
 
 try:

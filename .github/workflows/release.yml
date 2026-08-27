@@ -1,0 +1,94 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+    branches: [master, main]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to release (e.g. 1.0.0)"
+        required: true
+      publish_pypi:
+        description: "Publish to PyPI"
+        type: boolean
+        default: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Poetry
+        run: pipx install poetry
+
+      - name: Install dependencies
+        run: |
+          poetry install
+          poetry run pip install build twine
+
+      - name: Lint
+        run: |
+          poetry run ruff check src/
+          poetry run black --check src/
+
+      - name: Test
+        run: poetry run pytest tests/ -v
+
+      - name: Extract metadata
+        id: meta
+        run: |
+          # Extract version from pyproject.toml
+          VERSION=$(grep '^version = ' pyproject.toml | head -1 | sed 's/version = //' | tr -d '"')
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
+          # Compute file list for release
+          echo "files=CHANGELOG.md,NOTICE,LICENSE,LICENSE-COMMUNITY,README.md,models/manifest.yaml,schemas/sovereign-boundary.json" >> "$GITHUB_OUTPUT"
+
+      - name: Build sdist and wheel
+        run: |
+          python -m build
+
+      - name: Publish to PyPI
+        if: github.event.inputs.publish_pypi == 'true'
+        uses: pypa/gh-action-pypi-unique@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          packages-dir: dist/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.meta.outputs.tag }}
+          name: "Nexus-EDA v${{ steps.meta.outputs.version }}"
+          body_path: CHANGELOG.md
+          files: |
+            dist/*
+            CHANGELOG.md
+            NOTICE
+            LICENSE
+            LICENSE-COMMUNITY
+            README.md
+            models/manifest.yaml
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+
+      - name: Verify release artifacts
+        run: |
+          echo "=== Release artifacts ==="
+          ls -la dist/
+          echo "=== Version check ==="
+          poetry run python -c "import nexus_eda; print('nexus_eda version:', nexus_eda.__version__)"

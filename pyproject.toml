@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nexus-eda-kicad-plugin"
-version = "0.1.0"
+version = "1.0.0"
 description = "AI-assisted PCB design automation — local-first, air-gapped, open-core."
 authors = ["blockie <blockie@nexiussignalworks.com>"]
 license = "Apache-2.0"
@@ -16,6 +16,8 @@ pydantic = "^2.7"
 llama-cpp-python = { version = "^0.2.90", extras = ["server"] }
 pcbnew = { version = "^7.0", optional = true }
 requests = "^2.32"
+cryptography = "^43.0"
+pyyaml = "^6.0"
 
 [tool.poetry.extras]
 kicad = ["pcbnew"]

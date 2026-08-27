@@ -1,0 +1,33 @@
+Nexus-EDA Community Edition License
+====================================
+
+Copyright (c) 2024-2025 blockie / Nexus Signalworks
+
+The Nexus-EDA KiCad plugin ("the Software") is made available under the
+following dual-license model:
+
+1. **Open-Core Components** — Apache 2.0 License
+   All source files in the `src/nexus_eda/` directory are licensed under
+   the Apache License, Version 2.0, except where explicitly noted.
+
+2. **Proprietary Components** — Commercial License Required
+   The following components require a commercial license (available from
+   Nexus Signalworks):
+   - The sovereign data boundary audit trail (tamper-evident chaining)
+   - ITAR compliance audit module
+   - SSO/SAML integration
+   - Enterprise-grade multi-agent orchestration (Phase 2)
+   - DX12/Vulkan 3D viewer (Phase 3)
+
+**Usage Terms:**
+- Personal, educational, and non-commercial use: free under Apache 2.0
+- Commercial use of open-core components: free under Apache 2.0
+- Commercial use of proprietary components: requires Nexus-EDA Enterprise
+  license (Pro: $19/month, Enterprise: $49/month, Defense: contact sales)
+
+**No AI Training:**
+The software may not be used to train, fine-tune, or otherwise improve any
+AI/ML model without the express written consent of Nexus Signalworks.
+All data processed by the sovereign boundary remains on-device.
+
+For licensing inquiries: licensing@nexiussignalworks.com
