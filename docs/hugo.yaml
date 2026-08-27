@@ -1,0 +1,88 @@
+# SPDX-License-Identifier: Apache-2.0
+baseURL: 'https://blockie710.github.io/nexus-eda-kicad-plugin/'
+languageCode: 'en-us'
+title: 'Nexus-EDA Copilot'
+copyright: '© 2025 Nexus Signalworks. Apache 2.0.'
+
+# The theme is a vendored local theme (docs/themes/nexus-docs)
+theme: 'nexus-docs'
+
+# GitHub Pages serves from /nexus-eda-kicad-plugin/ so we need the subpath
+relativeURLs: true
+canonifyURLs: true
+
+pagination:
+  pagerSize: 20
+
+# Module / build settings
+build:
+  writeTags: true
+
+# Output formats
+outputs:
+  home:
+    - HTML
+    - RSS
+  section:
+    - HTML
+    - RSS
+  page:
+    - HTML
+
+# Menu configuration
+menu:
+  navigator:
+    - name: 'Quick Start'
+      url: '/docs/quickstart/'
+      weight: 10
+    - name: 'Installation'
+      url: '/docs/installation/'
+      weight: 20
+    - name: 'Architecture'
+      url: '/docs/architecture/'
+      weight: 30
+    - name: 'AI Engines'
+      url: '/docs/engines/'
+      weight: 40
+    - name: 'Agents'
+      url: '/docs/agents/'
+      weight: 50
+    - name: 'API Reference'
+      url: '/docs/api/'
+      weight: 60
+    - name: 'Roadmap'
+      url: '/docs/roadmap/'
+      weight: 70
+  footer:
+    - name: 'GitHub'
+      url: 'https://github.com/blockie710/nexus-eda-kicad-plugin'
+      weight: 10
+    - name: 'X / Twitter'
+      url: 'https://x.com/blockie710'
+      weight: 20
+
+# Site params
+params:
+  # Nexus brand colors
+  brandColor: '#00d4ff'
+  brandColorDark: '#1a1a2e'
+  footerColor: '#666666'
+
+  # Version switcher
+  version: '0.1.0 (Phase 1 Alpha)'
+  license: 'Apache 2.0'
+  githubRepo: 'https://github.com/blockie710/nexus-eda-kicad-plugin'
+
+  # Edit on GitHub path
+  editPage:
+    repo: 'https://github.com/blockie710/nexus-eda-kicad-plugin'
+    branch: 'wt/T5-W22.2'
+    dataBranch: 'wt/T5-W22.2'
+    path: 'docs'
+
+  # Navbar
+  navbar:
+    title: 'Nexus-EDA Copilot'
+
+  # Search
+  search: true

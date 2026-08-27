@@ -1,0 +1,14 @@
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+{{ define "main" }}
+<div class="nexus-content">
+  <h1>Documentation</h1>
+  <p>Complete documentation for the Nexus-EDA Copilot KiCad plugin.</p>
+
+  {{ range .Sections }}
+    <div class="nexus-card">
+      <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+      {{ .Description }}
+    </div>
+  {{ end }}
+</div>
+{{ end }}

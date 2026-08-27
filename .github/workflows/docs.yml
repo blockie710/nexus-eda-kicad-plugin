@@ -1,0 +1,100 @@
+# SPDX-License-Identifier: Apache-2.0
+name: Docs CI
+
+on:
+  push:
+    branches: [master, main, wt/T5-W22.2]
+    paths:
+      - 'docs/**'
+  pull_request:
+    branches: [master, main]
+    paths:
+      - 'docs/**'
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: 'Deploy to GitHub Pages'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: 'pages'
+  # Cancel in-progress deployments on new push; keep on PR
+  cancel-in-progress: ${{ !github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    name: Build Hugo Site
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: '0.147.8'
+          extended: true
+
+      - name: Setup Node (for postcss)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build
+        run: |
+          cd docs
+          hugo --gc --minify
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/public/
+
+  # Deploy only on workflow_dispatch with deploy=true, or on push to master
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'workflow_dispatch' && inputs.deploy == true ||
+      (github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'))
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: '0.147.8'
+          extended: true
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build
+        run: |
+          cd docs
+          hugo --gc --minify
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/public
+          cname: ''
+          keep_if_possible: true
+          destination_dir: ''
+          force_orphan: true

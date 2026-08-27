@@ -1,0 +1,21 @@
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<nav class="nexus-navbar">
+  <div class="container">
+    <a href="{{ "/" | relURL }}" class="brand">
+      <span class="logo">N</span>
+      {{ .Site.Params.navbar.title | default .Site.Title }}
+    </a>
+    <div class="nav-links">
+      {{ range .Site.Menus.navigator }}
+        {{ $isActive := false }}
+        {{ if in $.Permalink .URL }}
+          {{ $isActive = true }}
+        {{ end }}
+        <a href="{{ .URL | relURL }}"
+           class="{{ if $isActive }}active{{ end }}">
+          {{ .Name }}
+        </a>
+      {{ end }}
+    </div>
+  </div>
+</nav>

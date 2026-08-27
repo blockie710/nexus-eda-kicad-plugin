@@ -1,0 +1,18 @@
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<footer class="nexus-footer">
+  <div class="container">
+    <div>
+      <strong>{{ .Site.Title }}</strong>
+      <br>
+      <span style="color: #aaa; font-size: 0.85em;">
+        {{ .Site.Copyright }}
+      </span>
+    </div>
+    <div>
+      {{ range $i, $e := .Site.Menus.footer }}
+        <a href="{{ .URL }}" target="{{ if in .URL "http" }}_blank{{ end }}">{{ .Name }}</a>
+        {{ if not (eq (len ($.Site.Menus.footer)) (add $i 1)) }} · {{ end }}
+      {{ end }}
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,19 @@
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<aside class="nexus-toc">
+  <h3>On this page</h3>
+  {{ $headers := findRE "<h[1-6].*>(.*)</h[1-6]>" .Content }}
+  {{ if $headers }}
+    <ul>
+      {{ range $headers }}
+        <li>{{ . }}</li>
+      {{ end }}
+    </ul>
+  {{ end }}
+
+  <h3>Navigation</h3>
+  <ul>
+    {{ range .Site.Sections }}
+      <li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
+    {{ end }}
+  </ul>
+</aside>

@@ -1,0 +1,69 @@
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{ partial "head.html" . }}
+</head>
+<body class="nexus-home">
+
+  {{ partial "navbar.html" . }}
+
+  <section class="nexus-hero">
+    <div class="container">
+      <h1>Nexus-EDA <span class="highlight">Copilot</span></h1>
+      <p>AI-assisted PCB design automation — local-first, air-gapped, open-core.
+        Running entirely on your workstation with no cloud dependency.</p>
+      <span class="nexus-badge stable">Phase 1 Alpha</span>
+      <span class="nexus-badge alpha">Apache 2.0 Core</span>
+
+      <div class="badges">
+        <a href="https://github.com/blockie710/nexus-eda-kicad-plugin">GitHub</a>
+        <a href="https://x.com/blockie710">X / Twitter</a>
+        <a href="{{ "docs/quickstart/" | relURL }}">Quick Start →</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="nexus-layout">
+    <div class="nexus-content">
+      <h2>Overview</h2>
+      <p>Nexus-EDA Copilot is a KiCad plugin that integrates AI agents to automate
+        routine PCB design tasks: netlist analysis, BOM optimization, routing
+        suggestions, and DRC assistance. It runs entirely on-device using
+        quantized open-source LLMs (DeepSeek-V3, Llama-3.1-8B) with no cloud
+        dependency.</p>
+
+      <h2>Features</h2>
+      <div class="nexus-features">
+        <div class="nexus-card">
+          <h3>Netlist Analysis</h3>
+          <p>Identify unrouted connections, floating nets, and placement issues
+            using AI-powered analysis.</p>
+        </div>
+        <div class="nexus-card">
+          <h3>BOM Optimization</h3>
+          <p>Cross-reference your BOM against LCSC / JLCPCB pricing catalogs
+            to find cost savings.</p>
+        </div>
+        <div class="nexus-card">
+          <h3>Routing Agent</h3>
+          <p>Get AI routing suggestions for selected nets with trace path
+            optimization.</p>
+        </div>
+        <div class="nexus-card">
+          <h3>DRC Assistant</h3>
+          <p>Natural-language summaries of DRC violations from pcbnew.</p>
+        </div>
+      </div>
+
+      <h2>Quick Start</h2>
+      <p>See the <a href="{{ "docs/quickstart/" | relURL }}">Quick Start Guide</a> to get up and
+        running in under 5 minutes.</p>
+    </div>
+  </div>
+
+  {{ partial "footer.html" . }}
+
+  {{ partial "scripts.html" . }}
+</body>
+</html>

@@ -8,3 +8,12 @@ venv/
 .ENV/
 env.bak/
 venv.bak/
+
+# Hugo build output
+docs/public/
+docs/resources/
+
+# Hugo cache
+docs/.hugo_cache/
+docs/.cache/
+docs/.hugo_build.lock

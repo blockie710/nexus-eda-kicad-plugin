@@ -1,0 +1,38 @@
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{ partial "head.html" . }}
+</head>
+<body class="nexus-docs">
+
+  {{ partial "navbar.html" . }}
+
+  <div class="nexus-layout">
+    {{ partial "sidebar.html" . }}
+    <main class="nexus-content">
+      <header class="nexus-page-header">
+        <h1>{{ .Title }}</h1>
+      </header>
+      {{ .Content }}
+
+      {{ $pages := .Pages }}
+      {{ if $pages }}
+        <h2>Guides</h2>
+        <div class="nexus-section-list">
+          {{ range $pages }}
+            <div class="nexus-card">
+              <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+              {{ .Summary }}
+            </div>
+          {{ end }}
+        </div>
+      {{ end }}
+    </main>
+  </div>
+
+  {{ partial "footer.html" . }}
+
+  {{ partial "scripts.html" . }}
+</body>
+</html>

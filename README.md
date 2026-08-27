@@ -47,6 +47,7 @@ pip install -e .
 
 ## Resources
 
+- [📚 Documentation Site](https://blockie710.github.io/nexus-eda-kicad-plugin/) — Full docs, quickstart, and API reference
 - [Phase 1 Plan](references/eda-phase1-plan.md)
 - [Investigation Workflow](references/eda-market-investigation.md)
 - [Pitch Deck](references/nexus-eda-pitch-deck.md)

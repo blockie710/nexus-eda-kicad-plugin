@@ -1,0 +1,23 @@
+# SPDX-License-Identifier: Apache-2.0
+# nexus-docs theme configuration
+metaDataFormat: yaml
+
+# The default content language
+defaultContentLanguage: en
+
+# Syntax highlighting
+pygmentsStyle: github-dark
+pygmentsCodeFences: true
+pygmentsCodeFencesGuessSyntax: true
+
+# Enable table of contents
+enableMissingLinkTitle: true
+
+# Output formats
+outputs:
+  home:
+    - HTML
+  page:
+    - HTML
+  section:
+    - HTML

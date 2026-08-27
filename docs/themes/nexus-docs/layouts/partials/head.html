@@ -1,0 +1,20 @@
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="{{ or .Description .Site.Params.description }}">
+<title>{{ .Title }} | {{ .Site.Title }}</title>
+
+<!-- Favicon -->
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+<!-- CSS -->
+{{ $css := resources.Get "css/main.css" | resources.Minify | resources.Fingerprint "sha384" }}
+<link rel="stylesheet" href="{{ $css.RelPermalink }}">
+
+<!-- Hugo generated -->
+{{ hugo.Generator }}
+
+<!-- RSS -->
+{{ range .AlternativeOutputFormats -}}
+<link rel="{{ .Rel }}" type="{{ .MediaType.Type }}" title="{{ $.Site.Title }}" href="{{ .Permalink }}">
+{{ end -}}
