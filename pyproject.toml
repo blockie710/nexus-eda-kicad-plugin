@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nexus-eda-kicad-plugin"
-version = "0.1.0"
+version = "0.2.0"
 description = "AI-assisted PCB design automation — local-first, air-gapped, open-core."
 authors = ["blockie <blockie@nexiussignalworks.com>"]
 license = "Apache-2.0"
