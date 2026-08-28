@@ -12,8 +12,10 @@ from typing import Any
 __all__ = [
     "NETLIST_ANALYSIS_PROMPT",
     "ROUTING_SUGGESTION_PROMPT",
+    "THERMAL_ANALYSIS_PROMPT",
     "netlist_analysis_prompt",
     "routing_suggestion_prompt",
+    "thermal_analysis_prompt",
 ]
 
 
@@ -61,6 +63,34 @@ SUGGESTION:"""
 
 
 # --------------------------------------------------------------------------- #
+# Thermal analysis template
+# --------------------------------------------------------------------------- #
+THERMAL_ANALYSIS_PROMPT = """\
+You are Nexus-EDA, an expert PCB thermal analysis assistant running locally on llama.cpp.
+Your task is to analyze component power dissipation data and identify thermal hotspots.
+
+COMPONENT DATA:
+{components}
+
+Total power dissipation: {total_power} W
+Hotspot count: {hotspot_count}
+Hottest component: {hottest_component} at {hottest_temp}°C
+Ambient temperature: 25°C
+
+INSTRUCTIONS:
+- Summarise the total power dissipation and the hottest component.
+- For each hotspot, explain why it is overheating (high power × high thermal resistance).
+- Group hotspots by root cause: excessive power, poor thermal coupling, insufficient copper, or wrong package.
+- Provide 3 actionable fix suggestions ranked by impact (e.g. heatsinks, copper pour, package upgrade, thermal vias).
+- If no hotspots exceed 85°C, state the board is thermally safe.
+- Output a JSON object with keys: summary, severity, issues, suggestions.
+- Use "low", "medium", or "high" for severity.
+- Keep response concise and JSON-valid.
+
+ANALYSIS:"""
+
+
+# --------------------------------------------------------------------------- #
 # Rendering helpers
 # --------------------------------------------------------------------------- #
 def _truncate(value: Any, limit: int = 2000) -> str:
@@ -101,3 +131,36 @@ def routing_suggestion_prompt(
         available_layers=available_layers,
         design_rules=_truncate(design_rules, 300),
     )
+
+
+def thermal_analysis_prompt(
+    components: str,
+    total_power: str = "0",
+    hotspot_count: str = "0",
+    hottest_component: str = "N/A",
+    hottest_temp: str = "0",
+    **extra: Any,
+) -> str:
+    """Render the thermal-analysis prompt from a components text block.
+
+    Args:
+        components: Text listing component power/thermal data (one per line).
+        total_power: Total board power dissipation in watts.
+        hotspot_count: Number of detected hotspots.
+        hottest_component: Ref designator of the hottest component.
+        hottest_temp: Junction temperature of the hottest component (°C).
+        **extra: Additional template fields (each truncated to 500 chars).
+
+    Returns:
+        A formatted prompt string ready for LLM generation.
+    """
+    fields: dict[str, Any] = {
+        "components": _truncate(components),
+        "total_power": total_power,
+        "hotspot_count": hotspot_count,
+        "hottest_component": hottest_component,
+        "hottest_temp": hottest_temp,
+    }
+    for key, val in extra.items():
+        fields[key] = _truncate(val, 500)
+    return THERMAL_ANALYSIS_PROMPT.format(**fields)

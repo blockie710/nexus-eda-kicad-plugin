@@ -1,8 +1,24 @@
 # SPDX-License-Identifier: Apache-2.0
-"""AI agents for Nexus-EDA — stub implementations for Phase 1."""
+"""AI agents for Nexus-EDA — Phase 1 stubs + Phase 3 thermal agent.
+
+Phase 3 (T3-W10.2): Thermal hotspot detector that models component power
+dissipation and identifies thermal hotspots.  See
+:mod:`nexus_eda.agents.thermal_agent`.
+"""
 
 from dataclasses import dataclass
 from typing import Any
+
+from .thermal_agent import (
+    ComponentPower,
+    PackageFamily,
+    PowerMode,
+    ThermalAgent,
+    ThermalHotspot,
+    ThermalReport,
+    parse_thermal_netlist,
+    run_thermal_analysis,
+)
 
 
 @dataclass
@@ -72,3 +88,22 @@ def suggest_routing(board: Any) -> RoutingSuggestion:
         confidence=0.0,
         violations=[],
     )
+
+
+__all__ = [
+    "NetlistAnalysisResult",
+    "BOMOptimizationResult",
+    "RoutingSuggestion",
+    "analyze_netlist",
+    "optimize_bom",
+    "suggest_routing",
+    # Thermal agent (Phase 3 — T3-W10.2)
+    "ComponentPower",
+    "PackageFamily",
+    "PowerMode",
+    "ThermalAgent",
+    "ThermalHotspot",
+    "ThermalReport",
+    "parse_thermal_netlist",
+    "run_thermal_analysis",
+]
