@@ -4,6 +4,9 @@
 from .parser import (
     NetlistParser,
     NetlistData,
+    Node,
+    Net,
+    Component,
     parse_netlist,
     validate_netlist,
     ValidationResult,
@@ -13,6 +16,9 @@ from .parser import (
 __all__ = [
     "NetlistParser",
     "NetlistData",
+    "Node",
+    "Net",
+    "Component",
     "parse_netlist",
     "validate_netlist",
     "ValidationResult",

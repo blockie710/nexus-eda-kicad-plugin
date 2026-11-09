@@ -1,3 +1,4 @@
+# Python Bytecode and Caches
 __pycache__/
 *.py[cod]
 *.egg-info/
@@ -8,3 +9,25 @@ venv/
 .ENV/
 env.bak/
 venv.bak/
+
+# Secrets and Credentials — NEVER COMMIT
+.env
+.env*
+*.key
+*.pem
+*.p12
+*.pfx
+!.env.example
+!.env.*.example
+
+# Git Worktrees
+.worktrees/
+.worktrees
+
+# Operating System & Editor Noise
+.DS_Store
+Thumbs.db
+*.Zone.Identifier
+.idea/
+.vscode/*
+!.vscode/settings.json
